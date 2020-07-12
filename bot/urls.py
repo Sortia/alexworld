@@ -1,9 +1,9 @@
 from django.urls import path
 
-from . import views
+from . import webhook, webhook_handler
 
 app_name = 'bot'
 urlpatterns = [
-    path('webhook', views.webhook, name='webhook'),
-    path('handler', views.handler, name='handler'),
+    path('webhook', webhook.set_webhook, name='webhook'),
+    path('handler', webhook_handler.handler, name='handler'),
 ]

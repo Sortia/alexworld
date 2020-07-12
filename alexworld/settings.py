@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from bot import config
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -25,7 +27,7 @@ SECRET_KEY = '35*i6o+ot&!e-o^9$x4k6&japd35r6i@n05pb@b%x@*o5u!hfu'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['46f09987cb9d.ngrok.io', '127.0.0.1']
+ALLOWED_HOSTS = [config.webhook_domain, '127.0.0.1']
 
 
 # Application definition
