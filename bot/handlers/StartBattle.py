@@ -1,13 +1,14 @@
 from bot import user_state
 from bot.constants import stats
-from bot.handlers import battle_converse
+from bot.handlers import BattleConverse
+from bot.handlers.Markup import Markup
 from bot.models import User, Monster, Battle
 
 
-class StartBattleHandler:
+class StartBattle:
 
     @staticmethod
-    def handle(message, bot):
+    def handle(message, bot) -> None:
         user = User.objects.get(telegram_id=message.chat.id)
         user.state = user_state.fight
         user.save()
@@ -21,7 +22,7 @@ class StartBattleHandler:
         battle.save()
 
 
-def create_battle(user, monster):
+def create_battle(user, monster) -> Battle:
     return Battle.objects.create(
         user=user,
         monster=monster,
@@ -48,36 +49,36 @@ def create_battle(user, monster):
     )
 
 
-def calculate_monster_damage_speed(user, monster):
+def calculate_monster_damage_speed(user, monster) -> int:
     user_agility = user.stats.get(stat_id=stats.agility).value
     monster_agility = monster.stats.get(stat_id=stats.agility).value
 
     attack_speed = round(user_agility * 2.5 / monster_agility)
 
-    return str(1 if attack_speed == 0 else attack_speed)
+    return 1 if attack_speed == 0 else attack_speed
 
 
-def calculate_hp(monster):
+def calculate_hp(monster) -> int:
     monster_stamina = monster.stats.get(stat_id=stats.stamina).value
 
-    return str(round(monster_stamina * 10))
+    return round(monster_stamina * 10)
 
 
-def calculate_min_damage(monster):
+def calculate_min_damage(monster) -> int:
     monster_strength = monster.stats.get(stat_id=stats.strength).value
 
-    return str(round(monster_strength - (monster_strength * 0.2)))
+    return round(monster_strength - (monster_strength * 0.2))
 
 
-def calculate_max_damage(monster):
+def calculate_max_damage(monster) -> int:
     monster_strength = monster.stats.get(stat_id=stats.strength).value
 
-    return str(round(monster_strength + (monster_strength * 0.2)))
+    return round(monster_strength + (monster_strength * 0.2))
 
 
 def send_start_message(battle, bot):
     return bot.send_message(
         chat_id=battle.user.telegram_id,
-        text=battle_converse.get_message(battle),
-        reply_markup=battle_converse.get_markup(),
+        text=BattleConverse.get_message(battle),
+        reply_markup=Markup.battle(),
     )

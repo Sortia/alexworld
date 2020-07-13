@@ -1,4 +1,4 @@
-from bot.handlers import choose_specialization
+from bot.handlers.Markup import Markup
 
 
 class GetMarkupHandler:
@@ -8,5 +8,5 @@ class GetMarkupHandler:
         bot.send_message(
             message.chat.id,
             "Держи",
-            reply_markup=choose_specialization.get_default_keyboard()
+            reply_markup=Markup.default()
         )

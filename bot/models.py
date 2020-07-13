@@ -17,7 +17,7 @@ class Stat(models.Model):
 
 
 class SpecializationStat(models.Model):
-    specialization = models.ForeignKey(Specialization, on_delete=models.DO_NOTHING)
+    specialization = models.ForeignKey(Specialization, on_delete=models.DO_NOTHING, related_name='stats')
     stat = models.ForeignKey(Stat, on_delete=models.DO_NOTHING)
     value = models.IntegerField()
 
@@ -29,7 +29,7 @@ class User(models.Model):
     telegram_id = models.IntegerField()
     language_code = models.CharField(max_length=10, null=True)
     is_bot = models.BooleanField()
-    state = models.IntegerField(null=True)
+    state = models.IntegerField(null=True, default=0)
 
     specialization = models.ForeignKey(Specialization, on_delete=models.DO_NOTHING, null=True)
 
@@ -54,7 +54,7 @@ class MonsterStat(models.Model):
 
 class Battle(models.Model):
     monster = models.ForeignKey(Monster, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='battle')
     is_win = models.BooleanField(null=True)
     data = jsonfield.JSONField()
 

@@ -1,13 +1,12 @@
 from bot.models import User
 
 
-class StatHandler:
+class Stat:
 
     @staticmethod
     def handle(message, bot):
         try:
             user = User.objects.get(telegram_id=message.chat.id)
-
             message_text = ''
 
             for user_stat in user.stats.all():
