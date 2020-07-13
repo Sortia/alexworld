@@ -8,7 +8,6 @@ from bot import config
 from bot.handlers.battle_attack import BattleAttackHandler
 from bot.handlers.battle_block import BattleBlockHandler
 from bot.handlers.battle_dodge import BattleDodgeHandler
-from bot.handlers.black_jack import BlackJackHandler
 from bot.handlers.choose_specialization import ChooseSpecializationHandler
 from bot.handlers.get_markup import GetMarkupHandler
 from bot.handlers.start import StartHandler
