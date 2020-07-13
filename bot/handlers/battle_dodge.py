@@ -17,7 +17,7 @@ class BattleDodgeHandler:
         is_dodge = get_result_by_chance(dodge_chance)
 
         battle.data['meta']['steps_to_monster_damage'] = int(battle.data['meta']['steps_to_monster_damage']) - 1
-        battle.data['meta']['move_number'] = str(int(battle.data['meta']['step_number']) + 1)
+        battle.data['meta']['step_number'] = str(int(battle.data['meta']['step_number']) + 1)
         battle.save()
 
         MonsterAttackHandler.attack(battle, call, bot, is_dodge=is_dodge)

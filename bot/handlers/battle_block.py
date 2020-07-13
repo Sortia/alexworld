@@ -17,7 +17,7 @@ class BattleBlockHandler:
         is_block = get_result_by_chance(block_chance)
 
         battle.data['meta']['steps_to_monster_damage'] = int(battle.data['meta']['steps_to_monster_damage']) - 1
-        battle.data['meta']['step_number'] = str(int(battle.data['meta']['move_number']) + 1)
+        battle.data['meta']['step_number'] = str(int(battle.data['meta']['step_number']) + 1)
         battle.save()
 
         MonsterAttackHandler.attack(battle, call, bot, is_block=is_block)

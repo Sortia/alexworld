@@ -15,7 +15,7 @@ class BattleAttackHandler:
 
         battle.data['monster']['current_hp'] = str(int(battle.data['monster']['current_hp']) - user_damage)
         battle.data['meta']['steps_to_monster_damage'] = int(battle.data['meta']['steps_to_monster_damage']) - 1
-        battle.data['meta']['step_number'] = str(int(battle.data['meta']['move_number']) + 1)
+        battle.data['meta']['step_number'] = str(int(battle.data['meta']['step_number']) + 1)
         battle.save()
 
         if int(battle.data['monster']['current_hp']) <= 0:
