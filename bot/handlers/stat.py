@@ -10,7 +10,7 @@ class StatHandler:
 
             message_text = ''
 
-            for user_stat in user.userstat_set.all():
+            for user_stat in user.stats.all():
                 message_text += user_stat.stat.title + ': ' + str(user_stat.value) + '\n'
 
             bot.send_message(message.chat.id, message_text)

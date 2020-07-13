@@ -18,7 +18,7 @@ class ChooseSpecializationHandler:
             user.save()
 
             for specializationstat in specialization.specializationstat_set.all():
-                user.userstat_set.create(value=specializationstat.value, stat_id=specializationstat.stat_id)
+                user.stats.create(value=specializationstat.value, stat_id=specializationstat.stat_id)
 
             bot.send_message(
                 call.message.chat.id,
@@ -32,7 +32,7 @@ def get_default_keyboard():
 
     keyboard.row(
         types.KeyboardButton(text='Статистика'),
-        types.KeyboardButton(text='Задания')
+        types.KeyboardButton(text='Сражение')
     )
 
     keyboard.row(
