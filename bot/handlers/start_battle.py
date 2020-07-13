@@ -41,6 +41,7 @@ def create_battle(user, monster):
             },
             "meta": {
                 "steps_to_monster_damage": calculate_monster_damage_speed(user, monster),
+                "step_number": "0"
             },
             "actions": {}
         }

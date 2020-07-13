@@ -17,7 +17,7 @@ def send_action_message(call, bot, battle, block=None, dodge=None, adding_messag
     bot.edit_message_text(
         chat_id=call.message.chat.id,
         message_id=call.message.message_id,
-        text=get_message(battle) + adding_message,
+        text=get_message(battle) + adding_message + '\n Ход: ' + battle.data['meta']['step_number'],
         reply_markup=get_markup(),
     )
 
