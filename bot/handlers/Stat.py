@@ -1,3 +1,5 @@
+from bot.handlers.Markup import Markup
+from bot.handlers.Message import Message
 from bot.models import User
 
 
@@ -7,12 +9,8 @@ class Stat:
     def handle(message, bot):
         try:
             user = User.objects.get(telegram_id=message.chat.id)
-            message_text = ''
 
-            for user_stat in user.stats.all():
-                message_text += user_stat.stat.title + ': ' + str(user_stat.value) + '\n'
-
-            bot.send_message(message.chat.id, message_text)
+            bot.send_message(message.chat.id, Message.stats(user), reply_markup=Markup.stats())
 
         except User.DoesNotExist:
             return

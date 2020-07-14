@@ -4,22 +4,10 @@ from django.db import models
 from bot import user_state
 
 
-class Specialization(models.Model):
-    name = models.CharField(max_length=255)
-    title = models.CharField(max_length=255)
-    description = models.CharField(max_length=5000)
-
-
 class Stat(models.Model):
     name = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=5000)
-
-
-class SpecializationStat(models.Model):
-    specialization = models.ForeignKey(Specialization, on_delete=models.DO_NOTHING, related_name='stats')
-    stat = models.ForeignKey(Stat, on_delete=models.DO_NOTHING)
-    value = models.IntegerField()
 
 
 class User(models.Model):
@@ -30,12 +18,12 @@ class User(models.Model):
     language_code = models.CharField(max_length=10, null=True)
     is_bot = models.BooleanField()
     state = models.IntegerField(null=True, default=0)
-
-    specialization = models.ForeignKey(Specialization, on_delete=models.DO_NOTHING, null=True)
+    unallocated_stat_points = models.IntegerField(default=5)
+    energy = models.IntegerField(default=1000)
 
 
 class UserStat(models.Model):
-    value = models.IntegerField()
+    value = models.IntegerField(default=1)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='stats')
     stat = models.ForeignKey(Stat, on_delete=models.DO_NOTHING)
 
@@ -69,3 +57,21 @@ class Battle(models.Model):
         self.user.state = user_state.default
         self.user.save()
         self.save()
+
+
+class Loot(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, null=True)
+
+
+class MonsterLoot(models.Model):
+    min_count = models.IntegerField()
+    max_count = models.IntegerField()
+    monster = models.ForeignKey(Monster, on_delete=models.DO_NOTHING, related_name='loot')
+    loot = models.ForeignKey(Loot, on_delete=models.DO_NOTHING, related_name='monsters')
+
+
+class UserLoot(models.Model):
+    count = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='loot')
+    loot = models.ForeignKey(Loot, on_delete=models.DO_NOTHING)

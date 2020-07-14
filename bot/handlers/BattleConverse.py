@@ -1,5 +1,7 @@
 from telebot import types
 
+from bot.handlers.Markup import Markup
+
 
 class BattleConverse:
 
@@ -21,23 +23,29 @@ class BattleConverse:
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
             text=get_message(battle) + adding_message + '\n Ход: ' + str(battle.data['meta']['step_number']),
-            reply_markup=get_markup(),
+            reply_markup=Markup.battle(),
         )
 
     @staticmethod
-    def send_victory_message(call, bot):
+    def send_victory_message(call, bot, battle):
+        loot_message = ''
+
+        for loot in battle.data['loot']:
+            if not loot['count'] == 0:
+                loot_message += loot['name'] + ' x' + str(loot['count']) + '\n'
+
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text='Победа',
+            text='Победа\n\n' + 'Получено: \n' + loot_message,
         )
 
     @staticmethod
-    def send_defeat_message(call, bot):
+    def send_defeat_message(call, bot, battle):
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text='Поражение',
+            text='Поражение \n\n' + battle.monster.win_speech,
         )
 
 

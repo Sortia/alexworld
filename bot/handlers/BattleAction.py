@@ -4,7 +4,7 @@ from abc import abstractmethod
 from bot.constants import stats
 from bot.handlers.BattleConverse import BattleConverse
 from bot.handlers.MonsterAttack import MonsterAttack
-from bot.models import User, Battle
+from bot.models import User, Battle, MonsterLoot, Loot, UserLoot
 
 
 class BattleAction:
@@ -38,7 +38,8 @@ class BattleAction:
         pass
 
     def perform_step(self) -> None:
-        self.battle.data['meta']['steps_to_monster_damage'] = int(self.battle.data['meta']['steps_to_monster_damage']) - 1
+        self.battle.data['meta']['steps_to_monster_damage'] = int(
+            self.battle.data['meta']['steps_to_monster_damage']) - 1
         self.battle.data['meta']['step_number'] = int(self.battle.data['meta']['step_number']) + 1
 
     def check_user_victory(self) -> bool:
@@ -46,7 +47,8 @@ class BattleAction:
 
     def process_user_victory(self, call, bot) -> None:
         self.battle.win()
-        BattleConverse.send_victory_message(call, bot)
+        self.give_loot()
+        BattleConverse.send_victory_message(call, bot, self.battle)
 
     def maybe_monster_attack(self) -> None:
         if self.battle.data['meta']['steps_to_monster_damage'] == 0:
@@ -57,10 +59,34 @@ class BattleAction:
 
     def process_user_defeat(self, call, bot) -> None:
         self.battle.defeat()
-        BattleConverse.send_defeat_message(call, bot)
+        BattleConverse.send_defeat_message(call, bot, self.battle)
 
     def send_message(self, call, bot) -> None:
         BattleConverse.send_action_message(call, bot, self.battle, self.block, self.dodge)
+
+    def give_loot(self):
+        self.battle.data['loot'] = list()
+
+        for monster_loot in self.battle.monster.loot.all():
+            count_loot = random.randint(monster_loot.min_count, monster_loot.max_count)
+
+            if count_loot == 0:
+                return
+
+            self.battle.data['loot'].append({
+                'name': monster_loot.loot.name,
+                'count': count_loot,
+            })
+
+            try:
+                loot = self.battle.user.loot.get(loot=monster_loot.loot)
+                loot.count = loot.count + count_loot
+                loot.save()
+            except UserLoot.DoesNotExist:
+                self.battle.user.loot.create(
+                    loot=monster_loot.loot,
+                    count=count_loot,
+                )
 
     @staticmethod
     def get_result_by_chance(chance) -> bool:

@@ -2,7 +2,7 @@
 
 from django.db import migrations
 
-from bot.models import Stat, Specialization, SpecializationStat
+from bot.models import Stat
 
 
 def seed_stat(apps, schema_editor):
@@ -22,53 +22,6 @@ def seed_stat(apps, schema_editor):
         )
 
 
-def seed_specialization(apps, schema_editor):
-    data = [
-        [1, 'fighter', 'Файтер', 1],
-        [2, 'cleric', 'Клирик', 2],
-        [3, 'thief', 'Вор', 3],
-        [4, 'mage', 'Маг', 4],
-
-    ]
-
-    for stat in data:
-        Specialization.objects.create(
-            id=stat[0],
-            name=stat[1],
-            title=stat[2],
-            description=stat[3],
-        )
-
-
-def seed_specializationstat(apps, schema_editor):
-    data = [
-        [1, 9, 1, 1],
-        [2, 9, 1, 2],
-        [3, 4, 1, 3],
-        [4, 3, 1, 4],
-        [5, 8, 2, 1],
-        [6, 8, 2, 2],
-        [7, 2, 2, 3],
-        [8, 7, 2, 4],
-        [9, 3, 3, 1],
-        [10, 4, 3, 2],
-        [11, 10, 3, 3],
-        [12, 8, 3, 4],
-        [13, 4, 4, 1],
-        [14, 4, 4, 2],
-        [15, 7, 4, 3],
-        [16, 10, 4, 4],
-    ]
-
-    for stat in data:
-        SpecializationStat.objects.create(
-            id=stat[0],
-            value=stat[1],
-            specialization_id=stat[2],
-            stat_id=stat[3],
-        )
-
-
 class Migration(migrations.Migration):
     dependencies = [
         ('bot', '0004_userstat'),
@@ -76,8 +29,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(seed_stat),
-        migrations.RunPython(seed_specialization),
-        migrations.RunPython(seed_specializationstat),
     ]
 
 
