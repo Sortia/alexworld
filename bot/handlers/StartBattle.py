@@ -53,27 +53,36 @@ def calculate_monster_damage_speed(user, monster) -> int:
     user_agility = user.stats.get(stat_id=stats.agility).value
     monster_agility = monster.stats.get(stat_id=stats.agility).value
 
-    attack_speed = round(user_agility * 2.5 / monster_agility)
+    equip_agility = user.get_equip_stat_value(stats.agility)
+    agility = user_agility + equip_agility
+
+    attack_speed = round(agility * 2.5 / monster_agility)
 
     return 1 if attack_speed == 0 else attack_speed
 
 
-def calculate_hp(monster) -> int:
-    monster_stamina = monster.stats.get(stat_id=stats.stamina).value
+def calculate_hp(person) -> int:
+    person_stamina = person.stats.get(stat_id=stats.stamina).value
+    equip_stamina = person.get_equip_stat_value(stats.stamina)
+    stamina = person_stamina + equip_stamina
 
-    return round(monster_stamina * 10)
-
-
-def calculate_min_damage(monster) -> int:
-    monster_strength = monster.stats.get(stat_id=stats.strength).value
-
-    return round(monster_strength - (monster_strength * 0.2))
+    return round(stamina * 10)
 
 
-def calculate_max_damage(monster) -> int:
-    monster_strength = monster.stats.get(stat_id=stats.strength).value
+def calculate_min_damage(person) -> int:
+    person_strength = person.stats.get(stat_id=stats.strength).value
+    equip_strength = person.get_equip_stat_value(stats.strength)
+    strength = person_strength + equip_strength
 
-    return round(monster_strength + (monster_strength * 0.2))
+    return round(strength - (strength * 0.2))
+
+
+def calculate_max_damage(person) -> int:
+    person_strength = person.stats.get(stat_id=stats.strength).value
+    equip_strength = person.get_equip_stat_value(stats.strength)
+    strength = person_strength + equip_strength
+
+    return round(strength + (strength * 0.2))
 
 
 def send_start_message(battle, bot):

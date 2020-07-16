@@ -21,7 +21,7 @@ class UpStat:
             bot.edit_message_text(
                 chat_id=call.message.chat.id,
                 message_id=call.message.message_id,
-                text=Message.stats(user),
+                text=Message.stats(user) + '\n\n' + Message.equip(user),
                 reply_markup=Markup.stats(),
             )
 

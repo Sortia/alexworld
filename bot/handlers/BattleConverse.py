@@ -28,16 +28,20 @@ class BattleConverse:
 
     @staticmethod
     def send_victory_message(call, bot, battle):
-        loot_message = ''
+        item_message = ''
 
-        for loot in battle.data['loot']:
-            if not loot['count'] == 0:
-                loot_message += loot['name'] + ' x' + str(loot['count']) + '\n'
+        for item in battle.data['item']:
+
+            if not item['count'] == 0:
+                item_message += item['name'] + ' x' + str(item['count']) + '\n'
+
+        if not item_message == '':
+            item_message = 'Получено: \n' + item_message
 
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text='Победа\n\n' + 'Получено: \n' + loot_message,
+            text='Победа\n\n' + item_message,
         )
 
     @staticmethod

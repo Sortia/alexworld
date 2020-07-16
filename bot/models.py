@@ -8,6 +8,7 @@ class Stat(models.Model):
     name = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=5000)
+    icon = models.CharField(max_length=20, default='')
 
 
 class User(models.Model):
@@ -21,6 +22,16 @@ class User(models.Model):
     unallocated_stat_points = models.IntegerField(default=5)
     energy = models.IntegerField(default=1000)
 
+    def get_equip_stat_value(self, stat_id):
+        count_stat = 0
+
+        for equip in self.equips.all():
+            for item_stat in equip.item.stats.all():
+                if item_stat.stat_id == stat_id:
+                    count_stat += item_stat.value
+
+        return count_stat
+
 
 class UserStat(models.Model):
     value = models.IntegerField(default=1)
@@ -32,6 +43,9 @@ class Monster(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=5000, null=True)
     win_speech = models.CharField(max_length=255)
+
+    def get_equip_stat_value(self, stat_id):
+        return 0
 
 
 class MonsterStat(models.Model):
@@ -59,19 +73,41 @@ class Battle(models.Model):
         self.save()
 
 
-class Loot(models.Model):
+class ItemType(models.Model):
+    name = models.CharField(max_length=20)
+    icon = models.CharField(max_length=20, null=True)
+
+
+class Item(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255, null=True)
+    sale_cost = models.IntegerField(null=True)
+    buy_cost = models.IntegerField(null=True)
+    type = models.ForeignKey(ItemType, on_delete=models.DO_NOTHING)
+    in_shop = models.BooleanField(default=False)
 
 
-class MonsterLoot(models.Model):
+class MonsterItem(models.Model):
     min_count = models.IntegerField()
     max_count = models.IntegerField()
-    monster = models.ForeignKey(Monster, on_delete=models.DO_NOTHING, related_name='loot')
-    loot = models.ForeignKey(Loot, on_delete=models.DO_NOTHING, related_name='monsters')
+    monster = models.ForeignKey(Monster, on_delete=models.DO_NOTHING, related_name='item')
+    item = models.ForeignKey(Item, on_delete=models.DO_NOTHING, related_name='monsters')
 
 
-class UserLoot(models.Model):
+class UserItem(models.Model):
     count = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='loot')
-    loot = models.ForeignKey(Loot, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='item')
+    item = models.ForeignKey(Item, on_delete=models.DO_NOTHING)
+
+
+class ItemStat(models.Model):
+    value = models.IntegerField()
+    item = models.ForeignKey(Item, on_delete=models.DO_NOTHING, related_name='stats')
+    stat = models.ForeignKey(Stat, on_delete=models.DO_NOTHING)
+
+
+class UserEquipItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='equips')
+    item = models.ForeignKey(Item, on_delete=models.DO_NOTHING)
+    type = models.ForeignKey(ItemType, on_delete=models.DO_NOTHING)
+

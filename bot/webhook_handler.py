@@ -7,12 +7,15 @@ from django.views.decorators.csrf import csrf_exempt
 from bot import config
 from bot.handlers import BattleAction
 from bot.handlers.BattleAction import BattleActionDodge, BattleActionAttack, BattleActionBlock
+from bot.handlers.Equip import Equip
 from bot.handlers.GetMarkup import GetMarkupHandler
 from bot.handlers.Inventory import Inventory
 from bot.handlers.NewWorld import NewWorld
+from bot.handlers.Shop import Shop
 from bot.handlers.Start import Start
 from bot.handlers.StartBattle import StartBattle
 from bot.handlers.Stat import Stat
+from bot.handlers.Unequip import Unequip
 from bot.handlers.UpStat import UpStat
 
 bot = telebot.TeleBot(config.bot_token)
@@ -52,6 +55,11 @@ def start_battle(message): StartBattle.handle(message, bot)
 def start_battle(message): Inventory.handle(message, bot)
 
 
+# Handle 'Сражение' message
+@bot.message_handler(func=lambda message: message.text == 'Магазин', content_types=['text'])
+def start_battle(message): Shop.handle(message, bot)
+
+
 # Handle 'Блэкджек' message
 @bot.message_handler(func=lambda message: message.text == 'Блэкджек', content_types=['text'])
 def print_stat(message): bot.send_message(message.chat.id, "🍾")
@@ -64,24 +72,45 @@ def print_stat(message): bot.send_message(message.chat.id, "👩🏼👩🏻👩
 
 # Handle attack button
 @bot.callback_query_handler(func=lambda call: call.data == 'battle_attack')
-def choose_specialization(call): BattleAction.execute(BattleActionAttack(), call, bot)
+def battle_attack(call): BattleAction.execute(BattleActionAttack(), call, bot)
 
 
 # Handle block button
 @bot.callback_query_handler(func=lambda call: call.data == 'battle_block')
-def choose_specialization(call): BattleAction.execute(BattleActionBlock(), call, bot)
+def battle_block(call): BattleAction.execute(BattleActionBlock(), call, bot)
 
 
 # Handle dodge button
 @bot.callback_query_handler(func=lambda call: call.data == 'battle_dodge')
-def choose_specialization(call): BattleAction.execute(BattleActionDodge(), call, bot)
+def battle_dodge(call): BattleAction.execute(BattleActionDodge(), call, bot)
 
 
 # Handle dodge button
 @bot.callback_query_handler(func=lambda call: call.data == 'new_world')
-def choose_specialization(call): NewWorld.handle(call, bot)
+def new_world(call): NewWorld.handle(call, bot)
 
 
 # Handle dodge button
-@bot.callback_query_handler(func=lambda call: call.data in ['up_strength', 'up_stamina', 'up_agility', 'up_intelligence'])
-def choose_specialization(call): UpStat.handle(call, bot)
+@bot.callback_query_handler(
+    func=lambda call: call.data in ['up_strength', 'up_stamina', 'up_agility', 'up_intelligence'])
+def up_stat(call): UpStat.handle(call, bot)
+
+
+# Handle buy item
+@bot.message_handler(regexp='/buy_')
+def start_battle(message): Shop.handle_buy(message, bot)
+
+
+# Handle sale item
+@bot.message_handler(regexp='/sale_')
+def start_battle(message): Shop.handle_sale(message, bot)
+
+
+# Handle equip item
+@bot.message_handler(regexp='/equip_')
+def start_battle(message): Equip.handle(message, bot)
+
+
+# Handle equip item
+@bot.message_handler(regexp='/unequip_')
+def start_battle(message): Unequip.handle(message, bot)

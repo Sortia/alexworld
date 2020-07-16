@@ -4,7 +4,7 @@ from abc import abstractmethod
 from bot.constants import stats
 from bot.handlers.BattleConverse import BattleConverse
 from bot.handlers.MonsterAttack import MonsterAttack
-from bot.models import User, Battle, MonsterLoot, Loot, UserLoot
+from bot.models import User, Battle, UserItem
 
 
 class BattleAction:
@@ -47,7 +47,7 @@ class BattleAction:
 
     def process_user_victory(self, call, bot) -> None:
         self.battle.win()
-        self.give_loot()
+        self.give_item()
         BattleConverse.send_victory_message(call, bot, self.battle)
 
     def maybe_monster_attack(self) -> None:
@@ -64,28 +64,28 @@ class BattleAction:
     def send_message(self, call, bot) -> None:
         BattleConverse.send_action_message(call, bot, self.battle, self.block, self.dodge)
 
-    def give_loot(self):
-        self.battle.data['loot'] = list()
+    def give_item(self):
+        self.battle.data['item'] = list()
 
-        for monster_loot in self.battle.monster.loot.all():
-            count_loot = random.randint(monster_loot.min_count, monster_loot.max_count)
+        for monster_item in self.battle.monster.item.all():
+            count_item = random.randint(monster_item.min_count, monster_item.max_count)
 
-            if count_loot == 0:
+            if count_item == 0:
                 return
 
-            self.battle.data['loot'].append({
-                'name': monster_loot.loot.name,
-                'count': count_loot,
+            self.battle.data['item'].append({
+                'name': monster_item.item.name,
+                'count': count_item,
             })
 
             try:
-                loot = self.battle.user.loot.get(loot=monster_loot.loot)
-                loot.count = loot.count + count_loot
-                loot.save()
-            except UserLoot.DoesNotExist:
-                self.battle.user.loot.create(
-                    loot=monster_loot.loot,
-                    count=count_loot,
+                item = self.battle.user.item.get(item=monster_item.item)
+                item.count = item.count + count_item
+                item.save()
+            except UserItem.DoesNotExist:
+                self.battle.user.item.create(
+                    item=monster_item.item,
+                    count=count_item,
                 )
 
     @staticmethod

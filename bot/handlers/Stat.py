@@ -10,7 +10,9 @@ class Stat:
         try:
             user = User.objects.get(telegram_id=message.chat.id)
 
-            bot.send_message(message.chat.id, Message.stats(user), reply_markup=Markup.stats())
+            text = Message.stats(user) + '\n\n' + Message.equip(user)
+
+            bot.send_message(message.chat.id, text, reply_markup=Markup.stats())
 
         except User.DoesNotExist:
             return

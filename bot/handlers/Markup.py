@@ -14,11 +14,7 @@ class Markup:
 
         keyboard.row(
             types.KeyboardButton(text='Инвентарь'),
-        )
-
-        keyboard.row(
-            types.KeyboardButton(text='Блэкджек'),
-            types.KeyboardButton(text='Шлюхи')
+            types.KeyboardButton(text='Магазин'),
         )
 
         return keyboard
